@@ -1,13 +1,3 @@
-jQuery(document).ready(function ($) {
-  $.get('//restcountries.eu/rest/v2/all', function (data) {
-    data.forEach((country) => {
-      $('#country').append(
-        '<option value="' + country.name + '">' + country.name + '</option>'
-      );
-    });
-  });
-});
-
 const fullName = document.getElementById('fullName');
 const email = document.getElementById('email');
 const phone = document.getElementById('phone');
@@ -130,36 +120,30 @@ function checkIfFullNameValid(element) {
   }
 }
 
-document.getElementById('send-form').addEventListener('click', function (e) {
-  e.preventDefault();
-
-  if (
-    validateCountry() &&
-    validateFullName() &&
-    validateEmail() &&
-    validatePhone()
-  ) {
-    let user = {};
-
-    user.fullName = fullName.value;
-    user.email = email.value;
-    user.phone = phone.value;
-    user.country = country.value;
-
-    $.ajax({
-      url: 'thanks.php',
-      type: 'POST',
-      data: user,
-      success: function (response) {
-        console.log(response);
-      },
+jQuery(document).ready(function ($) {
+  $.get('//restcountries.eu/rest/v2/all', function (data) {
+    data.forEach((country) => {
+      $('#country').append(
+        '<option value="' + country.name + '">' + country.name + '</option>'
+      );
     });
+  });
 
-    window.location.href = '/organic-food-php-landing/thanks.php';
-  } else {
-    document.getElementById('message-text').innerText =
-      'Sorry there was an error sending your form.';
-  }
+  $('#send-form').on('click', function (e) {
+    e.preventDefault();
 
-  document.getElementById('message-box').style.display = 'block';
+    if (
+      validateCountry() &&
+      validateFullName() &&
+      validateEmail() &&
+      validatePhone()
+    ) {
+      $(this).unbind('click').click();
+    } else {
+      document.getElementById('message-text').innerText =
+        'Sorry there was an error sending your form.';
+    }
+
+    document.getElementById('message-box').style.display = 'block';
+  });
 });
